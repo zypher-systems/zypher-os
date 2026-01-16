@@ -4,10 +4,18 @@ base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: latest
 
 modules:
-  # 1. ADD REPOS (Google Chrome)
+# 1. ADD REPOS (Manual File Creation)
   - type: script
     scripts:
-      - /usr/bin/dnf5 config-manager --add-repo https://dl.google.com/linux/chrome/rpm/stable/x86_64
+      - |
+        cat <<EOF > /etc/yum.repos.d/google-chrome.repo
+        [google-chrome]
+        name=google-chrome
+        baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
+        enabled=1
+        gpgcheck=1
+        gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+        EOF
 
   # 2. SYSTEM PACKAGES
   - type: rpm-ostree
