@@ -4,34 +4,28 @@ base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: latest
 
 modules:
-# 2. SYSTEM PACKAGES (The Native Way)
+# 2. SYSTEM PACKAGES
   - type: rpm-ostree
-    # A. Import Security Keys First
+    # We must import the keys so the build trusts the new repo file
     keys:
       - https://dl.google.com/linux/linux_signing_key.pub
       - https://packages.microsoft.com/keys/microsoft.asc
-
-    # B. Add Repositories (For Ghostty)
-    repos:
-      - https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/repo/fedora-%OS_VERSION%/pgdev-ghostty-fedora-%OS_VERSION%.repo
-
-    # C. Remove Firefox
+      - https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/pubkey.gpg
+    
+    # Remove Firefox
     remove:
       - firefox
       - firefox-langpacks
-
-    # D. Install Packages (Direct RPM URLs + Repo Packages)
+    
+    # Install the packages by name (No URLs, No Scripts)
     install:
-      # Google Chrome (Direct Install)
-      - https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-      # VS Code (Direct Install)
-      - https://packages.microsoft.com/yumrepos/vscode/code-1.96.2-1734607870.el8.x86_64.rpm
-      # System Tools
-      - plymouth-theme-spinner
+      - google-chrome-stable
+      - code
       - ghostty
+      - plymouth-theme-spinner
       - zsh
       - fastfetch
-
+      
   # 3. COPY YOUR CUSTOM FILES
   - type: files
     files:
