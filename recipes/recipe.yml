@@ -4,42 +4,42 @@ base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: latest
 
 modules:
-# BLOCK A: Setup Repositories (The Plumbing)
-  - type: script
-    scripts:
-      # 1. Import Security Keys explicitly
-      - rpm --import https://dl.google.com/linux/linux_signing_key.pub
-      - rpm --import https://packages.microsoft.com/keys/microsoft.asc
-      
-      # 2. Download Official Google Chrome Repo File
-      - curl -Lo /etc/yum.repos.d/google-chrome.repo https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome.repo
-      
-      # 3. Create VS Code Repo File (Using simple echo)
-      - sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
-
-  # BLOCK B: Install Packages (The Action)
+  # 1. SYSTEM PACKAGES (VS Code & Ghostty)
   - type: rpm-ostree
-    # We stripped out Ghostty for this run to ISOLATE the Chrome issue. 
-    # If this passes, we add Ghostty back next.
+    # Import keys so the build trusts Microsoft & Ghostty
+    keys:
+      - https://packages.microsoft.com/keys/microsoft.asc
+      - https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/pubkey.gpg
+
+    # Add Ghostty Repo (VS Code is handled by the file we just made)
+    repos:
+      - https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/repo/fedora-%OS_VERSION%/pgdev-ghostty-fedora-%OS_VERSION%.repo
+
+    # Cleanup
     remove:
       - firefox
       - firefox-langpacks
+
+    # Install System Tools (No Chrome here!)
     install:
-      - google-chrome-stable
       - code
+      - ghostty
       - plymouth-theme-spinner
       - zsh
       - fastfetch
-      
-  # 3. COPY YOUR CUSTOM FILES
-  - type: files
-    files:
-      - source: files/usr
-        destination: /usr
-      - source: files/etc/os-release
-        destination: /usr/lib/os-release
 
-  # 4. FINAL BRANDING SCRIPTS
-  - type: script
-    scripts:
-      - /usr/bin/plymouth-set-default-theme -R spinner
+  # 2. FLATPAKS (Chrome goes here)
+  - type: default-flatpaks
+    notify: true
+    system:
+      # Browsers
+      - repo: flathub
+        name: com.google.Chrome
+      # Creative Tools
+      - repo: flathub
+        name: com.obsproject.Studio
+      - repo: flathub
+        name: org.gimp.GIMP
+      # System
+      - repo: flathub
+        name: com.github.tchx84.Flatseal
