@@ -35,8 +35,8 @@ modules:
       - source: etc/os-release
         destination: /etc/os-release
       # Uncomment this once the build passes and you confirm 'usr' is correct
-      # - source: usr
-      #   destination: /usr
+      - source: usr
+        destination: /usr
 
   # 5. FINAL CLEANUP
   #- type: script
