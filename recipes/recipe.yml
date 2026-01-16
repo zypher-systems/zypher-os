@@ -4,29 +4,31 @@ base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: latest
 
 modules:
-# 1. ADD REPOS (Manual File Creation)
-  - type: script
-    scripts:
-      - |
-        cat <<EOF > /etc/yum.repos.d/google-chrome.repo
-        [google-chrome]
-        name=google-chrome
-        baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
-        enabled=1
-        gpgcheck=1
-        gpgkey=https://dl.google.com/linux/linux_signing_key.pub
-        EOF
-
-  # 2. SYSTEM PACKAGES
+# 2. SYSTEM PACKAGES (The Native Way)
   - type: rpm-ostree
+    # A. Import Security Keys First
+    keys:
+      - https://dl.google.com/linux/linux_signing_key.pub
+      - https://packages.microsoft.com/keys/microsoft.asc
+
+    # B. Add Repositories (For Ghostty)
+    repos:
+      - https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/repo/fedora-%OS_VERSION%/pgdev-ghostty-fedora-%OS_VERSION%.repo
+
+    # C. Remove Firefox
     remove:
       - firefox
       - firefox-langpacks
+
+    # D. Install Packages (Direct RPM URLs + Repo Packages)
     install:
-      - google-chrome-stable
+      # Google Chrome (Direct Install)
+      - https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+      # VS Code (Direct Install)
+      - https://packages.microsoft.com/yumrepos/vscode/code-1.96.2-1734607870.el8.x86_64.rpm
+      # System Tools
       - plymouth-theme-spinner
       - ghostty
-      - code
       - zsh
       - fastfetch
 
