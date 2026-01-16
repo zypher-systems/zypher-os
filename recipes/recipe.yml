@@ -4,13 +4,12 @@ base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: latest
 
 modules:
-  # 1. FILES (Copy Repos & Branding FIRST)
-  # This puts 'vscode.repo' in the right place so the next step can find it.
+  # 1. FILES (Fix: Source is just 'usr' and 'etc')
   - type: files
     files:
-      - source: files/usr
+      - source: usr
         destination: /usr
-      - source: files/etc
+      - source: etc
         destination: /etc
 
   # 2. SYSTEM PACKAGES
@@ -20,7 +19,7 @@ modules:
       - https://packages.microsoft.com/keys/microsoft.asc
       - https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/pubkey.gpg
 
-    # Add Ghostty Repo
+    # Add Ghostty Repo (VS Code is found via the file we just copied in Step 1)
     repos:
       - https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/repo/fedora-%OS_VERSION%/pgdev-ghostty-fedora-%OS_VERSION%.repo
 
@@ -29,7 +28,7 @@ modules:
       - firefox
       - firefox-langpacks
 
-    # Install RPMs (Now it will find 'code'!)
+    # Install RPMs
     install:
       - code
       - ghostty
@@ -37,7 +36,7 @@ modules:
       - zsh
       - fastfetch
 
-  # 3. FLATPAKS (Correct v2 Syntax)
+  # 3. FLATPAKS
   - type: default-flatpaks
     configurations:
       - install:
