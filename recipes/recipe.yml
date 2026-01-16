@@ -4,22 +4,19 @@ base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: latest
 
 modules:
-  # 1. REPO SETUP (Only copy the address book, NOT the branding)
+  # 1. REPO SETUP (Address Book First)
   - type: files
     files:
       - source: etc/yum.repos.d
         destination: /etc/yum.repos.d
 
-  # 2. SYSTEM PACKAGES (Installs while system is still "Bazzite" = Success)
+  # 2. SYSTEM PACKAGES
   - type: rpm-ostree
     # Import Keys
     keys:
       - https://packages.microsoft.com/keys/microsoft.asc
     
     # Install Packages
-    remove:
-      - firefox
-      - firefox-langpacks
     install:
       - code
       - zsh
@@ -32,13 +29,12 @@ modules:
           - com.google.Chrome
           - com.github.tchx84.Flatseal
 
-  # 4. BRANDING & ASSETS (Apply the name change LAST)
+  # 4. BRANDING & ASSETS (Name Change Last)
   - type: files
     files:
-      # Now we apply the branding safely
       - source: etc/os-release
         destination: /etc/os-release
-      # Uncomment these lines below if your 'usr' folder is definitely in 'files/'
+      # Uncomment this once the build passes and you confirm 'usr' is correct
       # - source: usr
       #   destination: /usr
 
