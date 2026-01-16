@@ -1,0 +1,8 @@
+NAME="Zypher OS"
+VERSION="1.0 (Obsidian)"
+ID=zypher
+PRETTY_NAME="Zypher OS 1.0"
+ANSI_COLOR="0;36"
+CPE_NAME="cpe:/o:zypher:zypher:1.0"
+HOME_URL="https://github.com/yourusername/zypher-os"
+VARIANT="Creator Edition"
