@@ -41,4 +41,4 @@ modules:
   # 5. FINAL CLEANUP
   - type: script
     scripts:
-      - /usr/bin/plymouth-set-default-theme -R spinner
+      - scripts/plymouth.sh  # Runs your custom script file
