@@ -2,4 +2,4 @@
 set -ouex pipefail
 
 # Set the theme
-/usr/bin/plymouth-set-default-theme -R spinner
+/usr/bin/plymouth-set-default-theme spinner
