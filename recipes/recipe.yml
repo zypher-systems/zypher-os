@@ -28,13 +28,14 @@ modules:
       - zsh
       - fastfetch
 
-  # 2. FLATPAKS
-  - type: flatpaks
-    flatpaks:
-      - com.google.Chrome
-      - com.obsproject.Studio
-      - org.gimp.GIMP
-      - com.github.tchx84.Flatseal
+  # 2. FLATPAKS (Correct v2 Syntax)
+  - type: default-flatpaks
+    configurations:
+      - install:
+          - com.google.Chrome
+          - com.obsproject.Studio
+          - org.gimp.GIMP
+          - com.github.tchx84.Flatseal
 
   # 3. BRANDING & FILES
   - type: files
