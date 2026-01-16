@@ -4,21 +4,19 @@ base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: latest
 
 modules:
-  # 1. FILES (Copies your fixed folder structure)
+  # 1. REPO SETUP (Only copy the address book, NOT the branding)
   - type: files
     files:
-      - source: usr
-        destination: /usr
-      - source: etc
-        destination: /etc
+      - source: etc/yum.repos.d
+        destination: /etc/yum.repos.d
 
-  # 2. SYSTEM PACKAGES (Safe Mode)
+  # 2. SYSTEM PACKAGES (Installs while system is still "Bazzite" = Success)
   - type: rpm-ostree
     # Import Keys
     keys:
       - https://packages.microsoft.com/keys/microsoft.asc
     
-    # Install ONLY VS Code first to prove it works
+    # Install Packages
     remove:
       - firefox
       - firefox-langpacks
@@ -33,3 +31,18 @@ modules:
       - install:
           - com.google.Chrome
           - com.github.tchx84.Flatseal
+
+  # 4. BRANDING & ASSETS (Apply the name change LAST)
+  - type: files
+    files:
+      # Now we apply the branding safely
+      - source: etc/os-release
+        destination: /etc/os-release
+      # Uncomment these lines below if your 'usr' folder is definitely in 'files/'
+      # - source: usr
+      #   destination: /usr
+
+  # 5. FINAL CLEANUP
+  - type: script
+    scripts:
+      - /usr/bin/plymouth-set-default-theme -R spinner
