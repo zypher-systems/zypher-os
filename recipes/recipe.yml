@@ -4,7 +4,7 @@ base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: latest
 
 modules:
-  # 1. FILES (Fix: Source is just 'usr' and 'etc')
+  # 1. FILES (Copies your fixed folder structure)
   - type: files
     files:
       - source: usr
@@ -12,27 +12,18 @@ modules:
       - source: etc
         destination: /etc
 
-  # 2. SYSTEM PACKAGES
+  # 2. SYSTEM PACKAGES (Safe Mode)
   - type: rpm-ostree
-    # Import keys
+    # Import Keys
     keys:
       - https://packages.microsoft.com/keys/microsoft.asc
-      - https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/pubkey.gpg
-
-    # Add Ghostty Repo (VS Code is found via the file we just copied in Step 1)
-    repos:
-      - https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/repo/fedora-%OS_VERSION%/pgdev-ghostty-fedora-%OS_VERSION%.repo
-
-    # Cleanup
+    
+    # Install ONLY VS Code first to prove it works
     remove:
       - firefox
       - firefox-langpacks
-
-    # Install RPMs
     install:
       - code
-      - ghostty
-      - plymouth-theme-spinner
       - zsh
       - fastfetch
 
@@ -41,11 +32,4 @@ modules:
     configurations:
       - install:
           - com.google.Chrome
-          - com.obsproject.Studio
-          - org.gimp.GIMP
           - com.github.tchx84.Flatseal
-
-  # 4. FINAL CLEANUP
-  - type: script
-    scripts:
-      - /usr/bin/plymouth-set-default-theme -R spinner
