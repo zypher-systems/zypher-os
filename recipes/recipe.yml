@@ -6,12 +6,12 @@ image-version: latest
 modules:
   # 1. SYSTEM PACKAGES (VS Code & Ghostty)
   - type: rpm-ostree
-    # Import keys so the build trusts Microsoft & Ghostty
+    # Import keys
     keys:
       - https://packages.microsoft.com/keys/microsoft.asc
       - https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/pubkey.gpg
 
-    # Add Ghostty Repo (VS Code is handled by the file we just made)
+    # Add Ghostty Repo (VS Code is found via the file in files/etc/yum.repos.d/)
     repos:
       - https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/repo/fedora-%OS_VERSION%/pgdev-ghostty-fedora-%OS_VERSION%.repo
 
@@ -20,7 +20,7 @@ modules:
       - firefox
       - firefox-langpacks
 
-    # Install System Tools (No Chrome here!)
+    # Install RPMs
     install:
       - code
       - ghostty
@@ -28,18 +28,23 @@ modules:
       - zsh
       - fastfetch
 
-  # 2. FLATPAKS (Chrome goes here)
-  - type: default-flatpaks
-    notify: true
-    system:
-      # Browsers
-      - repo: flathub
-        name: com.google.Chrome
-      # Creative Tools
-      - repo: flathub
-        name: com.obsproject.Studio
-      - repo: flathub
-        name: org.gimp.GIMP
-      # System
-      - repo: flathub
-        name: com.github.tchx84.Flatseal
+  # 2. FLATPAKS
+  - type: flatpaks
+    flatpaks:
+      - com.google.Chrome
+      - com.obsproject.Studio
+      - org.gimp.GIMP
+      - com.github.tchx84.Flatseal
+
+  # 3. BRANDING & FILES
+  - type: files
+    files:
+      - source: files/usr
+        destination: /usr
+      - source: files/etc
+        destination: /etc
+
+  # 4. FINAL CLEANUP
+  - type: script
+    scripts:
+      - /usr/bin/plymouth-set-default-theme -R spinner
