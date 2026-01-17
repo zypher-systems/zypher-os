@@ -35,11 +35,10 @@ modules:
     files:
       - source: etc/os-release
         destination: /etc/os-release
+      # ADD THIS BLOCK:
+      - source: etc/plymouth/plymouthd.conf
+        destination: /etc/plymouth/plymouthd.conf
       # Uncomment this once the build passes and you confirm 'usr' is correct
       - source: usr
         destination: /usr
 
-  # 5. FINAL CLEANUP
-  - type: script
-    scripts:
-      - scripts/plymouth.sh  # Runs your custom script file
