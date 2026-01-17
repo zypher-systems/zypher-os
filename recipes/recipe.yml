@@ -21,7 +21,7 @@ modules:
       - code
       - zsh
       - fastfetch
-      - plymouth-theme-spinner  <-- ADD THIS LINE
+      - plymouth-theme-spinner
 
   # 3. FLATPAKS
   - type: default-flatpaks
